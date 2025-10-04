@@ -1,0 +1,8 @@
+node_modules/
+playwright-report/
+reports/
+blob-report/
+allure-results/
+auth.json
+.env
+test-results/
