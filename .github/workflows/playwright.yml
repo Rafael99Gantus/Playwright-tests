@@ -1,36 +1,44 @@
-name: Playwright Tests  # имя пайплайна (как он будет называться в GitHub)
+name: Playwright Tests
 
 on:
-  push:                 # когда запускать
-    branches: [ main ]  # при пуше в main-ветку
-  pull_request:         # или при создании pull request
+  push:
+    branches: [ main ]
+  pull_request:
 
 jobs:
-  test:                 # имя работы (job)
-    runs-on: ubuntu-latest  # на какой системе будет запуск (Linux)
+  test:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository        # 1. Скачивает твой репозиторий
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node                # 2. Ставит Node.js (чтобы npm работал)
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install dependencies       # 3. Ставит твои пакеты (npm ci)
+      - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers # 4. Ставит браузеры Playwright
+      - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests       # 5. Запускает твои тесты
+      # 🔹 UI-тесты
+      - name: Run UI tests
         run: npm run start
         env:
           BASE_URL: "https://test.c2hero.com"
 
-      - name: Upload report as artifact  # 6. Сохраняет отчёт (playwright-report/)
-        if: always()                     # даже если тесты упали
+      # 🔹 API-тесты
+      - name: Run API tests
+        run: npx playwright test tests/api --reporter=list
+        env:
+          BASE_URL: "https://test.c2hero.com"
+
+      # 🔹 Сохранение отчёта
+      - name: Upload Playwright report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report

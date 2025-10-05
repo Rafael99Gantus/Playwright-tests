@@ -9,7 +9,10 @@
     "report": "npx playwright show-report",
     "save:report": "node -e \"const fs=require('fs');const path=require('path');const cp=require('child_process');const srcDir='playwright-report';const srcIndex=path.join(srcDir,'index.html');if(!fs.existsSync(srcIndex)){console.error('❌ Нет свежего отчёта: playwright-report/index.html не найден');process.exit(1);}const destDir='reports';if(!fs.existsSync(destDir))fs.mkdirSync(destDir);const list=fs.readdirSync(destDir).filter(n=>/^\\d{3}_run-/.test(n)&&fs.statSync(path.join(destDir,n)).isDirectory()).sort();const last=list.length?path.join(destDir,list[list.length-1],'index.html'):null;if(last&&fs.existsSync(last)){const a=fs.readFileSync(srcIndex);const b=fs.readFileSync(last);if(a.length===b.length&&a.equals(b)){console.log('❌ Этот отчёт уже был сохранён');process.exit(0);}}const parts=Object.fromEntries(new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date()).map(p=>[p.type,p.value]));const stamp=`${parts.year}-${parts.month}-${parts.day}_${parts.hour}-${parts.minute}-${parts.second}`;const next=(list.length+1).toString().padStart(3,'0');const folder=`${next}_run-${stamp}`;const dest=path.join(destDir,folder);fs.cpSync(srcDir,dest,{recursive:true});console.log('✅ Report saved to',dest);cp.execSync(`npx playwright show-report \\\"${dest}\\\"`,{stdio:'inherit'});\"",
     "allure:gen": "npx allure generate allure-results -o allure-report --clean",
-    "allure:open": "npx allure open allure-report"
+    "allure:open": "npx allure open allure-report",
+    "record:auth": "npx playwright codegen https://test.c2hero.com --save-storage=auth.json",
+    "record": "npx playwright codegen https://test.c2hero.com",
+    "test:api": "npx playwright test tests/api --reporter=list"
   },
   "keywords": [],
   "author": "Rafael",
