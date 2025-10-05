@@ -1,0 +1,35 @@
+name: Playwright Tests  # имя пайплайна (как он будет называться в GitHub)
+
+on:
+  push:                 # когда запускать
+    branches: [ main ]  # при пуше в main-ветку
+  pull_request:         # или при создании pull request
+
+jobs:
+  test:                 # имя работы (job)
+    runs-on: ubuntu-latest  # на какой системе будет запуск (Linux)
+
+    steps:
+      - name: Checkout repository        # 1. Скачивает твой репозиторий
+        uses: actions/checkout@v4
+
+      - name: Set up Node                # 2. Ставит Node.js (чтобы npm работал)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies       # 3. Ставит твои пакеты (npm ci)
+        run: npm ci
+
+      - name: Install Playwright browsers # 4. Ставит браузеры Playwright
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests       # 5. Запускает твои тесты
+        run: npm run start
+
+      - name: Upload report as artifact  # 6. Сохраняет отчёт (playwright-report/)
+        if: always()                     # даже если тесты упали
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
