@@ -26,6 +26,8 @@ jobs:
 
       - name: Run Playwright tests       # 5. Запускает твои тесты
         run: npm run start
+        env:
+          BASE_URL: "https://test.c2hero.com"
 
       - name: Upload report as artifact  # 6. Сохраняет отчёт (playwright-report/)
         if: always()                     # даже если тесты упали
